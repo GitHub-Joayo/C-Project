@@ -1,2 +1,2 @@
-# C-Project
+# C++_Project
 Yeol_Heol C++ Project
