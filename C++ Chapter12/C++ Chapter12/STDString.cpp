@@ -4,30 +4,47 @@
 
 #include "STDString.h"
 
-String::String() : str(NULL) {}
+String::String() : str(NULL), len(0) {}
 
 String::String(const char *str) {
 
-	this->str = new char[strlen(str) + 1];
+	len = strlen(str) + 1;
+
+	this->str = new char[len];
 	strcpy(this->str, str);
+
+}
+
+String::String(const String& str) {
+
+	len = str.len;
+	this->str = new char[len];
+	strcpy(this->str, str.str);
 
 }
 
 String& String::operator=(const String &ref) {
 
-	this->str = new char[strlen(ref.str) + 1];
+	if (str != NULL)
+		delete[] str;
+
+	len = ref.len;
+
+	this->str = new char[len];
 	strcpy(this->str, ref.str);
 
 	return *this;
 
 }
 
-char* String::operator+(const String &ref) {
+String String::operator+(const String &ref) {
 
-	char *tmp = new char[strlen(this->str) + strlen(ref.str) + 1];
+	char *tmpstr = new char[len + ref.len - 1];
 
-	strcpy(tmp, this->str);
-	strcat(tmp, ref.str);
+	strcpy(tmpstr, this->str);
+	strcat(tmpstr, ref.str);
+
+	String tmp(tmpstr);
 
 	return tmp;
 
@@ -35,13 +52,17 @@ char* String::operator+(const String &ref) {
 
 String& String::operator+=(const String &ref) {
 
-	char *tmp = str;
+	len += (ref.len - 1);
 
-	this->str = new char[strlen(this->str) + strlen(ref.str) + 1];
-	strcpy(this->str, tmp);
-	strcat(this->str, ref.str);
+	char *tmp = new char[len];
 
-	delete[] tmp;
+	strcpy(tmp, str);
+	strcat(tmp, ref.str);
+
+	if (str != NULL)
+		delete[] str;
+
+	str = tmp;
 
 	return *this;
 
@@ -49,17 +70,14 @@ String& String::operator+=(const String &ref) {
 
 bool String::operator==(const String &ref) {
 
-	if (!strcmp(this->str, ref.str))
-		return true;
-	else
-		return false;
+	return strcmp(str, ref.str) ? false : true;
 
 }
 
 String::~String() {
 
-	// if (str != NULL)
-		// delete[] str;
+	if (str != NULL)
+		 delete[] str;
 	
 }
 
